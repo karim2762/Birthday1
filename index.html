@@ -1222,14 +1222,16 @@ function spawnBalloons(){
   const content=document.getElementById('sec-content');
   if(!btn) return;
 
-  // Only auto-reveal when page 7 is actually entered (not on initial load)
+  // Reset secret state each time page 7 is entered
   window._checkSecretUnlocked = function(){
-    const done=localStorage.getItem('sec_unlocked')==='1';
-    if(done){ btn.style.display='none'; reveal(false); }
+    // Always start locked — hide content, show button
+    if(content) content.classList.remove('open');
+    btn.style.display='';
+    const wrap=document.getElementById('audio-sec');
+    if(wrap) wrap.innerHTML='';
   };
 
   btn.addEventListener('click',()=>{
-    localStorage.setItem('sec_unlocked','1');
     btn.style.display='none';
     reveal(true);
     heartExplosion();
