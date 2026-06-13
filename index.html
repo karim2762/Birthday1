@@ -917,6 +917,14 @@ document.getElementById('replay-btn').addEventListener('click', () => {
 
   document.querySelectorAll('.prm-line').forEach(l=>l.classList.remove('vis'));
 
+  // Reset secret section so lock/button show again on replay
+  const secContent = document.getElementById('sec-content');
+  const unlockBtn  = document.getElementById('unlock-btn');
+  const audioSec   = document.getElementById('audio-sec');
+  if(secContent) secContent.classList.remove('open');
+  if(unlockBtn)  unlockBtn.style.display = '';
+  if(audioSec)   audioSec.innerHTML = '';
+
   // Restart typing effect on page 1
   const typedEl = document.getElementById('typed');
   const cur = document.getElementById('cursor');
@@ -951,6 +959,7 @@ function onPageEnter(i) {
     if (id==='p9') initFinal();
   }
   if (id==='p6') autoCelebrate();
+  if (id==='p7' && window._checkSecretUnlocked) window._checkSecretUnlocked();
   if (id==='p8') animatePromise();
   if (id==='p9') initFinal();
 }
@@ -1213,8 +1222,11 @@ function spawnBalloons(){
   const content=document.getElementById('sec-content');
   if(!btn) return;
 
-  const done=localStorage.getItem('sec_unlocked')==='1';
-  if(done){ btn.style.display='none'; reveal(false); }
+  // Only auto-reveal when page 7 is actually entered (not on initial load)
+  window._checkSecretUnlocked = function(){
+    const done=localStorage.getItem('sec_unlocked')==='1';
+    if(done){ btn.style.display='none'; reveal(false); }
+  };
 
   btn.addEventListener('click',()=>{
     localStorage.setItem('sec_unlocked','1');
