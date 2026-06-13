@@ -1,0 +1,1371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>For My Best Friend ❤️</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;0,900;1,400;1,700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+/* =====================================================
+   TOKENS
+   ===================================================== */
+:root{
+  --rose:#FF6B8A; --blush:#FFB3C6; --lav:#C9B8FF;
+  --gold:#FFD700; --deep:#06060F; --ink:#10101A;
+  --glass:rgba(255,255,255,0.06);
+  --glass2:rgba(255,255,255,0.12);
+  --text:#F0EAF8; --muted:rgba(240,234,248,0.55);
+  --r:20px; --ease:cubic-bezier(.4,0,.2,1);
+  --serif:'Playfair Display',Georgia,serif;
+  --sans:'Inter',sans-serif;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{width:100%;height:100%;overflow:hidden;font-family:var(--sans);
+  background:var(--deep);color:var(--text);-webkit-font-smoothing:antialiased}
+img{display:block;max-width:100%}
+button{cursor:pointer;font-family:inherit;border:none;background:none;outline:none}
+button:focus-visible{outline:2px solid var(--rose);outline-offset:3px}
+
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important}
+}
+
+/* =====================================================
+   PAGE ENGINE
+   ===================================================== */
+#app{position:fixed;inset:0;overflow:hidden}
+
+.page{
+  position:absolute;inset:0;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:50px 24px 40px;
+  overflow:hidden;
+  transform:translateX(100%);
+  opacity:0;
+  transition:transform .75s var(--ease), opacity .6s var(--ease);
+  pointer-events:none;
+}
+.page.active{transform:translateX(0);opacity:1;pointer-events:all}
+.page.exit-left{transform:translateX(-100%);opacity:0;pointer-events:none}
+.page.off-right{transform:translateX(100%);opacity:0;pointer-events:none}
+.page.off-left{transform:translateX(-100%);opacity:0;pointer-events:none}
+
+/* =====================================================
+   FX OVERLAY
+   ===================================================== */
+#fx{position:fixed;inset:0;pointer-events:none;z-index:9999;overflow:hidden}
+
+.sparkle{
+  position:absolute;
+  clip-path:polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  animation:sparkleAnim 1s forwards;
+}
+@keyframes sparkleAnim{
+  0%{transform:scale(0) rotate(0deg);opacity:1}
+  50%{transform:scale(1.6) rotate(180deg);opacity:1}
+  100%{transform:scale(0) rotate(360deg) translateY(-20px);opacity:0}
+}
+
+/* =====================================================
+   SHARED COMPONENTS
+   ===================================================== */
+.page-eyebrow{
+  font-family:var(--sans);font-size:.72rem;letter-spacing:4px;color:var(--rose);
+  text-transform:uppercase;margin-bottom:12px;opacity:0;animation:fadeUp .8s .2s forwards;
+}
+
+.title{
+  font-family:var(--serif);
+  font-size:clamp(2rem,5vw,3.4rem);font-weight:700;text-align:center;
+  background:linear-gradient(135deg,var(--rose),var(--lav),var(--gold));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:8px;letter-spacing:-.5px;line-height:1.2;
+}
+.subtitle{
+  font-family:var(--sans);
+  font-size:clamp(.85rem,2vw,1rem);color:var(--muted);text-align:center;
+  margin-bottom:24px;font-weight:300;letter-spacing:.3px;
+}
+
+/* PRIMARY BUTTON */
+.btn{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:14px 34px;
+  background:linear-gradient(135deg,var(--rose),#c94d6e);
+  color:#fff;font-size:.95rem;font-weight:600;border-radius:50px;
+  letter-spacing:.3px;box-shadow:0 8px 28px rgba(255,107,138,.35);
+  transition:all .3s var(--ease);position:relative;overflow:hidden;
+  font-family:var(--sans);
+}
+.btn::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.2),transparent);
+  opacity:0;transition:opacity .3s}
+.btn:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(255,107,138,.55)}
+.btn:hover::before{opacity:1}
+.btn:active{transform:translateY(-1px)}
+
+/* GHOST / SECONDARY BUTTON */
+.btn-ghost{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:12px 28px;
+  background:var(--glass);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.15);
+  color:var(--text);font-size:.9rem;font-weight:500;border-radius:50px;
+  letter-spacing:.3px;transition:all .3s var(--ease);
+  font-family:var(--sans);
+}
+.btn-ghost:hover{background:var(--glass2);border-color:rgba(255,255,255,.28);transform:translateY(-2px)}
+
+.glass-card{
+  background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.09);border-radius:var(--r);padding:28px 32px;
+}
+
+@keyframes fadeUp{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:none}}
+@keyframes fadeIn{to{opacity:1}}
+
+/* =====================================================
+   PAGE NAV BUTTONS — inline on each page like "Begin"
+   ===================================================== */
+.page-nav{
+  display:flex;align-items:center;gap:14px;
+  margin-top:32px;flex-shrink:0;
+}
+
+/* "Next" — primary rose gradient (same as .btn) */
+.btn-next{
+  display:inline-flex;align-items:center;gap:10px;
+  padding:18px 46px;
+  background:linear-gradient(135deg,var(--rose),#c94d6e);
+  color:#fff;font-size:1.15rem;font-weight:700;border-radius:50px;
+  letter-spacing:.3px;box-shadow:0 8px 28px rgba(255,107,138,.35);
+  transition:all .3s var(--ease);position:relative;overflow:hidden;
+  font-family:var(--sans);
+}
+.btn-next::before{content:'';position:absolute;inset:0;
+  background:linear-gradient(135deg,rgba(255,255,255,.2),transparent);
+  opacity:0;transition:opacity .3s}
+.btn-next:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(255,107,138,.55)}
+.btn-next:hover::before{opacity:1}
+.btn-next:active{transform:translateY(-1px)}
+
+/* "Back" — ghost/glass style */
+.btn-back{
+  display:inline-flex;align-items:center;gap:8px;
+  padding:13px 28px;
+  background:var(--glass);backdrop-filter:blur(10px);
+  border:1px solid rgba(255,255,255,.15);
+  color:var(--text);font-size:.9rem;font-weight:500;border-radius:50px;
+  letter-spacing:.3px;transition:all .3s var(--ease);
+  font-family:var(--sans);
+}
+.btn-back:hover{background:var(--glass2);border-color:rgba(255,255,255,.28);transform:translateY(-2px)}
+.btn-back:active{transform:translateY(0)}
+
+/* Progress dots — now centered top area */
+#nav-dots{
+  position:fixed;bottom:18px;left:50%;transform:translateX(-50%);
+  display:flex;align-items:center;gap:7px;
+  z-index:800;
+}
+.nav-dot{
+  width:7px;height:7px;border-radius:50%;
+  background:rgba(255,255,255,.2);
+  transition:all .35s var(--ease);cursor:pointer;
+  border:none;padding:0;
+}
+.nav-dot.active{
+  background:var(--rose);width:22px;border-radius:6px;
+  box-shadow:0 0 8px rgba(255,107,138,.5);
+}
+.nav-dot:hover:not(.active){background:rgba(255,255,255,.45);transform:scale(1.2)}
+
+/* =====================================================
+   PAGE 1  INTRO
+   ===================================================== */
+#p1{background:radial-gradient(ellipse at 50% 40%,#1e0828 0%,var(--deep) 70%);text-align:center}
+#stars-c{position:absolute;inset:0;pointer-events:none}
+
+.intro-over{
+  font-family:var(--sans);
+  font-size:clamp(.8rem,2.5vw,1rem);color:var(--blush);letter-spacing:5px;
+  text-transform:uppercase;margin-bottom:16px;opacity:0;animation:fadeUp 1s .4s forwards;
+  font-weight:300;
+}
+
+.intro-name{
+  font-family:var(--serif);
+  font-size:clamp(3rem,10vw,6.5rem);font-weight:900;letter-spacing:-3px;
+  background:linear-gradient(135deg,#fff 0%,var(--rose) 45%,var(--lav) 100%);
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  min-height:1.2em;margin-bottom:24px;
+}
+#cursor{
+  display:inline-block;width:3px;height:.85em;background:var(--rose);
+  vertical-align:bottom;animation:blink 1s step-end infinite;
+  -webkit-text-fill-color:var(--rose);border-radius:2px;margin-left:2px;
+}
+@keyframes blink{50%{opacity:0}}
+
+.intro-tag{
+  font-family:var(--serif);
+  font-size:clamp(.9rem,2vw,1.1rem);color:var(--muted);font-style:italic;
+  margin-bottom:44px;opacity:0;animation:fadeUp 1s 2.6s forwards;
+}
+
+.glow-orb{
+  position:absolute;width:560px;height:560px;border-radius:50%;
+  background:radial-gradient(circle,rgba(255,107,138,.09) 0%,transparent 70%);
+  top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;
+  animation:pulseOrb 4s ease-in-out infinite;
+}
+@keyframes pulseOrb{0%,100%{transform:translate(-50%,-50%) scale(1);opacity:.5}
+  50%{transform:translate(-50%,-50%) scale(1.18);opacity:1}}
+
+.fhearts-wrap{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.fh{position:absolute;opacity:0;animation:floatH linear infinite}
+@keyframes floatH{
+  0%{opacity:0;transform:translateY(0) scale(.5) rotate(-10deg)}
+  10%{opacity:.8}
+  90%{opacity:.3}
+  100%{opacity:0;transform:translateY(-105vh) scale(1.3) rotate(10deg)}
+}
+
+/* =====================================================
+   PAGE 2  TIMELINE
+   ===================================================== */
+#p2{background:linear-gradient(160deg,#0f0820 0%,#0a0f1e 100%)}
+
+.tl-wrap{
+  max-width:740px;width:100%;max-height:calc(100vh - 200px);
+  overflow-y:auto;overflow-x:hidden;padding:4px 8px 8px;
+  scrollbar-width:thin;scrollbar-color:var(--rose) transparent;
+}
+.tl-wrap::-webkit-scrollbar{width:3px}
+.tl-wrap::-webkit-scrollbar-thumb{background:var(--rose);border-radius:2px}
+
+.timeline{position:relative;padding:0 0 20px}
+.timeline::before{
+  content:'';position:absolute;left:50%;top:0;bottom:0;width:1px;
+  background:linear-gradient(to bottom,transparent,var(--rose),var(--lav),transparent);
+  transform:translateX(-50%);
+}
+@media(max-width:580px){.timeline::before{left:20px}}
+
+.tl-item{
+  display:grid;grid-template-columns:1fr 20px 1fr;
+  align-items:start;gap:16px;margin-bottom:40px;
+  opacity:0;transform:translateY(18px);
+  transition:opacity .6s var(--ease),transform .6s var(--ease);
+}
+.tl-item.vis{opacity:1;transform:none}
+.tl-item.right .tl-card{grid-column:3}
+.tl-item.right .tl-spacer{grid-column:1;grid-row:1}
+.tl-item.right .tl-dot{grid-column:2;grid-row:1}
+
+.tl-card{
+  background:var(--glass);backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,255,255,.08);border-radius:var(--r);padding:20px 24px;
+  transition:transform .3s,box-shadow .3s;
+}
+.tl-card:hover{transform:translateY(-4px);box-shadow:0 16px 36px rgba(0,0,0,.3)}
+.tl-icon{font-size:2rem;margin-bottom:8px}
+.tl-card h3{font-family:var(--serif);font-size:1rem;color:var(--blush);margin-bottom:6px;font-weight:700}
+.tl-card p{font-family:var(--sans);font-size:.85rem;color:var(--muted);line-height:1.75;font-weight:300}
+.tl-dot{width:14px;height:14px;border-radius:50%;
+  background:linear-gradient(135deg,var(--rose),var(--lav));
+  box-shadow:0 0 12px rgba(255,107,138,.6);margin-top:24px;justify-self:center}
+
+@media(max-width:580px){
+  .tl-item{grid-template-columns:24px 1fr;gap:10px}
+  .tl-item .tl-card{grid-column:2}
+  .tl-item.right .tl-card{grid-column:2}
+  .tl-item.right .tl-spacer{display:none}
+  .tl-dot{grid-column:1;margin-top:20px}
+}
+
+/* =====================================================
+   PAGE 3  PHOTOS — flip cards
+   ===================================================== */
+#p3{background:linear-gradient(160deg,#0a0f1e 0%,#150f20 100%)}
+
+.gallery-scroll{
+  max-width:920px;width:100%;
+  max-height:calc(100vh - 220px);
+  overflow-y:auto;overflow-x:hidden;
+  padding:4px 8px;
+  scrollbar-width:thin;scrollbar-color:var(--rose) transparent;
+}
+.gallery-scroll::-webkit-scrollbar{width:3px}
+.gallery-scroll::-webkit-scrollbar-thumb{background:var(--rose);border-radius:2px}
+
+.photo-grid{
+  display:grid;
+  grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+  gap:16px;
+}
+@media(max-width:480px){.photo-grid{grid-template-columns:repeat(2,1fr)}}
+
+.photo-flip{
+  height:240px;perspective:1000px;cursor:pointer;
+  opacity:0;animation:fadeIn .5s forwards;
+}
+.pf-inner{
+  position:relative;width:100%;height:100%;
+  transform-style:preserve-3d;
+  transition:transform .7s var(--ease);
+}
+.photo-flip:hover .pf-inner,
+.photo-flip.flipped .pf-inner{transform:rotateY(180deg)}
+
+.pf-front,.pf-back{
+  position:absolute;inset:0;
+  border-radius:var(--r);
+  backface-visibility:hidden;-webkit-backface-visibility:hidden;
+  overflow:hidden;
+}
+.pf-front{
+  background:#1a0f2a;
+  border:1px solid rgba(255,255,255,.08);
+}
+.pf-front img{width:100%;height:100%;object-fit:cover;border-radius:var(--r);transition:transform .4s}
+.photo-flip:hover .pf-front img{transform:scale(1.04)}
+.pf-front .ph-placeholder{
+  width:100%;height:100%;display:flex;align-items:center;justify-content:center;
+  font-size:2.5rem;color:rgba(255,255,255,.15);background:var(--glass);
+}
+
+.pf-back{
+  transform:rotateY(180deg);
+  background:linear-gradient(135deg,rgba(255,107,138,.18),rgba(201,184,255,.15));
+  backdrop-filter:blur(16px);-webkit-backdrop-filter:blur(16px);
+  border:1px solid rgba(255,107,138,.25);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:20px;text-align:center;gap:12px;
+}
+.pf-back .pf-emoji{font-size:2.2rem}
+.pf-back .pf-label{
+  font-family:var(--serif);font-size:.92rem;color:var(--text);
+  font-style:italic;line-height:1.6;
+}
+.pf-back .pf-hint{
+  font-family:var(--sans);font-size:.7rem;color:var(--muted);
+  letter-spacing:1.5px;text-transform:uppercase;
+}
+
+/* Lightbox */
+#lb{display:none;position:fixed;inset:0;background:rgba(0,0,0,.93);z-index:9990;
+  align-items:center;justify-content:center;backdrop-filter:blur(8px)}
+#lb.open{display:flex}
+#lb-img{max-width:88vw;max-height:82vh;object-fit:contain;border-radius:12px;
+  box-shadow:0 0 80px rgba(255,107,138,.18)}
+.lb-close{position:absolute;top:18px;right:22px;
+  background:var(--glass2);border:1px solid rgba(255,255,255,.2);
+  color:#fff;font-size:1.3rem;width:42px;height:42px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;transition:all .2s}
+.lb-close:hover{background:var(--rose)}
+.lb-nav{position:absolute;top:50%;transform:translateY(-50%);
+  background:var(--glass2);border:1px solid rgba(255,255,255,.15);
+  color:#fff;font-size:1.5rem;width:50px;height:50px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;transition:all .2s}
+.lb-nav:hover{background:var(--rose)}
+#lb-prev{left:14px} #lb-next{right:14px}
+.lb-cap{position:absolute;bottom:22px;left:50%;transform:translateX(-50%);
+  color:var(--muted);font-style:italic;font-size:.9rem;
+  background:var(--glass);padding:6px 18px;border-radius:20px;white-space:nowrap;
+  backdrop-filter:blur(10px);font-family:var(--serif)}
+
+/* =====================================================
+   PAGE 4  REASONS — flip cards
+   ===================================================== */
+#p4{background:linear-gradient(160deg,#150f20 0%,#0d1520 100%)}
+
+.reasons-grid{
+  display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+  gap:16px;max-width:860px;width:100%;
+  max-height:calc(100vh - 220px);overflow-y:auto;
+  padding:4px;scrollbar-width:thin;scrollbar-color:var(--rose) transparent;
+}
+.reasons-grid::-webkit-scrollbar{width:3px}
+.reasons-grid::-webkit-scrollbar-thumb{background:var(--rose);border-radius:2px}
+
+.flip{height:180px;perspective:1000px;cursor:pointer;
+  opacity:0;transform:translateY(16px);transition:opacity .5s,transform .5s}
+.flip.vis{opacity:1;transform:none}
+.flip-inner{position:relative;width:100%;height:100%;
+  transform-style:preserve-3d;transition:transform .6s var(--ease)}
+.flip:hover .flip-inner,.flip:focus .flip-inner{transform:rotateY(180deg)}
+.flip-f,.flip-b{
+  position:absolute;inset:0;border-radius:var(--r);backface-visibility:hidden;
+  -webkit-backface-visibility:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:16px;text-align:center;
+}
+.flip-f{background:var(--glass);backdrop-filter:blur(14px);border:1px solid rgba(255,255,255,.09)}
+.flip-b{background:linear-gradient(135deg,rgba(255,107,138,.22),rgba(201,184,255,.18));
+  backdrop-filter:blur(14px);border:1px solid rgba(255,107,138,.28);transform:rotateY(180deg)}
+.flip-icon{font-size:2.5rem;margin-bottom:10px}
+.flip-f h3{font-family:var(--serif);font-size:.88rem;color:var(--blush);font-weight:700;letter-spacing:.3px}
+.flip-b p{font-family:var(--sans);font-size:.82rem;color:var(--text);line-height:1.6;font-style:italic;font-weight:300}
+
+/* =====================================================
+   PAGE 5  MEMORY BOOK
+   ===================================================== */
+#p5{background:linear-gradient(160deg,#0d1520 0%,#100a1e 100%)}
+
+.mem-slider{max-width:660px;width:100%}
+.mem-track{overflow:hidden;border-radius:var(--r)}
+.mem-slides{display:flex;transition:transform .6s var(--ease)}
+.mem-slide{
+  min-width:100%;padding:40px 36px;
+  background:var(--glass);backdrop-filter:blur(20px);-webkit-backdrop-filter:blur(20px);
+  border:1px solid rgba(255,255,255,.08);border-radius:var(--r);
+  display:flex;flex-direction:column;align-items:center;text-align:center;gap:16px;
+}
+.mem-icon{font-size:2.8rem;animation:float 3s ease-in-out infinite}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.mem-slide h3{font-family:var(--serif);font-size:1.3rem;color:var(--blush);font-weight:700}
+.mem-slide p{font-family:var(--sans);font-size:.95rem;color:var(--muted);line-height:1.85;max-width:480px;font-weight:300;font-style:italic}
+.sl-ctrl{display:flex;align-items:center;justify-content:center;gap:18px;margin-top:24px}
+.sl-btn{width:42px;height:42px;border-radius:50%;background:var(--glass2);
+  border:1px solid rgba(255,255,255,.12);color:#fff;font-size:1.2rem;
+  display:flex;align-items:center;justify-content:center;transition:all .2s}
+.sl-btn:hover{background:var(--rose);transform:scale(1.1)}
+.sl-dots{display:flex;gap:8px}
+.sdot{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.22);transition:all .3s;cursor:pointer}
+.sdot.on{background:var(--rose);transform:scale(1.3)}
+
+/* =====================================================
+   PAGE 6  CELEBRATION
+   ===================================================== */
+#p6{background:radial-gradient(ellipse at 50% 40%,#1e0828 0%,#0a0a14 70%);text-align:center}
+#conf-c{position:absolute;inset:0;pointer-events:none}
+
+.cel-msg{
+  font-family:var(--serif);
+  font-size:clamp(1.7rem,5vw,3rem);font-weight:700;
+  background:linear-gradient(135deg,var(--gold),var(--rose),var(--lav));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:18px;max-width:640px;line-height:1.3;
+}
+.cel-sub{font-family:var(--sans);font-size:1rem;color:var(--muted);margin-bottom:40px;font-style:italic;max-width:480px;text-align:center;font-weight:300}
+
+.balloons{position:absolute;bottom:0;width:100%;pointer-events:none}
+.balloon{position:absolute;bottom:-80px;animation:riseUp linear infinite}
+@keyframes riseUp{0%{bottom:-80px;opacity:.9}100%{bottom:110%;opacity:0}}
+
+/* =====================================================
+   PAGE 7  SECRET — premium audio player
+   ===================================================== */
+#p7{background:linear-gradient(160deg,#0a0a14 0%,#100520 100%);text-align:center}
+
+.sec-lock{font-size:4rem;margin-bottom:16px;animation:float 3s ease-in-out infinite}
+.sec-title{
+  font-family:var(--serif);
+  font-size:clamp(1.6rem,4vw,2.6rem);font-weight:700;
+  color:var(--text);margin-bottom:10px;
+}
+.sec-tease{font-family:var(--sans);font-size:1rem;color:var(--muted);margin-bottom:32px;font-style:italic;max-width:420px;text-align:center;font-weight:300}
+.unlock-btn{
+  display:inline-flex;align-items:center;gap:10px;padding:15px 38px;
+  background:linear-gradient(135deg,#7c3aed,#c026d3);color:#fff;
+  font-family:var(--sans);font-size:1rem;font-weight:600;border-radius:50px;
+  box-shadow:0 8px 28px rgba(124,58,237,.42);transition:all .3s var(--ease);
+}
+.unlock-btn:hover{transform:translateY(-3px);box-shadow:0 14px 36px rgba(124,58,237,.6)}
+
+#sec-content{display:none;flex-direction:column;align-items:center;gap:28px;
+  max-width:560px;width:100%;}
+#sec-content.open{display:flex}
+
+.env-wrap{font-size:3.5rem;animation:envOpen .9s forwards}
+@keyframes envOpen{
+  0%{transform:scale(.3) rotate(-10deg);opacity:0}
+  60%{transform:scale(1.2) rotate(5deg);opacity:1}
+  100%{transform:scale(1) rotate(0deg);opacity:1}
+}
+
+/* Premium audio player */
+.audio-premium{
+  width:100%;max-width:480px;
+  background:linear-gradient(135deg,rgba(124,58,237,.15),rgba(192,38,211,.1));
+  backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);
+  border:1px solid rgba(124,58,237,.25);border-radius:24px;
+  padding:32px 30px;
+}
+.audio-premium-header{
+  display:flex;align-items:center;gap:16px;margin-bottom:28px;
+}
+.audio-album-art{
+  width:64px;height:64px;border-radius:14px;
+  background:linear-gradient(135deg,var(--rose),var(--lav));
+  display:flex;align-items:center;justify-content:center;
+  font-size:1.8rem;flex-shrink:0;
+  box-shadow:0 8px 24px rgba(255,107,138,.3);
+  transition:all .5s var(--ease);
+}
+.audio-album-art.playing{animation:albumSpin 8s linear infinite;box-shadow:0 8px 32px rgba(255,107,138,.55)}
+@keyframes albumSpin{from{transform:rotate(0deg)}to{transform:rotate(360deg)}}
+
+.audio-meta{flex:1;min-width:0}
+.audio-meta .trk{
+  font-family:var(--serif);font-size:1.05rem;font-weight:700;color:var(--text);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-bottom:4px;
+}
+.audio-meta .sub{font-family:var(--sans);font-size:.78rem;color:var(--muted);letter-spacing:.5px}
+
+.audio-progress-wrap{margin-bottom:20px}
+.prog-track{
+  height:4px;background:rgba(255,255,255,.1);border-radius:4px;cursor:pointer;
+  position:relative;margin-bottom:8px;
+}
+.prog-fill{
+  height:100%;width:0%;
+  background:linear-gradient(90deg,var(--rose),var(--lav));
+  border-radius:4px;transition:width .1s linear;position:relative;
+}
+.prog-fill::after{
+  content:'';position:absolute;right:-5px;top:50%;transform:translateY(-50%);
+  width:10px;height:10px;border-radius:50%;background:var(--rose);
+  box-shadow:0 0 8px rgba(255,107,138,.8);
+}
+.prog-times{display:flex;justify-content:space-between;font-family:var(--sans);font-size:.72rem;color:var(--muted)}
+
+.audio-controls{
+  display:flex;align-items:center;justify-content:center;gap:20px;
+}
+#play-btn{
+  width:60px;height:60px;border-radius:50%;flex-shrink:0;
+  background:linear-gradient(135deg,var(--rose),#c94d6e);color:#fff;font-size:1.3rem;
+  display:flex;align-items:center;justify-content:center;
+  box-shadow:0 6px 20px rgba(255,107,138,.45);transition:all .25s;
+}
+#play-btn:hover{transform:scale(1.1);box-shadow:0 10px 30px rgba(255,107,138,.6)}
+#play-btn:active{transform:scale(.96)}
+
+/* Volume control */
+.vol-row{display:flex;align-items:center;gap:10px;margin-top:16px}
+.vol-icon{font-size:1rem;flex-shrink:0;opacity:.6}
+.vol-slider{flex:1;-webkit-appearance:none;height:3px;border-radius:4px;
+  background:rgba(255,255,255,.15);outline:none;cursor:pointer}
+.vol-slider::-webkit-slider-thumb{-webkit-appearance:none;width:12px;height:12px;
+  border-radius:50%;background:var(--rose);cursor:pointer;transition:transform .2s}
+.vol-slider::-webkit-slider-thumb:hover{transform:scale(1.3)}
+
+/* no audio fallback */
+.no-audio-msg{
+  font-family:var(--sans);font-size:.88rem;color:var(--muted);
+  text-align:center;font-style:italic;line-height:1.7;
+  padding:20px;border:1px dashed rgba(255,255,255,.1);border-radius:16px;
+  background:var(--glass);max-width:360px;
+}
+.no-audio-msg span{display:block;font-size:1.8rem;margin-bottom:10px}
+
+/* =====================================================
+   PAGE 8  PROMISE
+   ===================================================== */
+#p8{background:radial-gradient(ellipse at 50% 50%,#1a0a28 0%,#050510 70%);text-align:center}
+.prm-orb{
+  position:absolute;width:600px;height:600px;border-radius:50%;
+  background:radial-gradient(circle,rgba(201,184,255,.07) 0%,transparent 70%);
+  top:50%;left:50%;transform:translate(-50%,-50%);pointer-events:none;
+  animation:pulseOrb 5s ease-in-out infinite;
+}
+.prm-lines{max-width:560px;display:flex;flex-direction:column;gap:22px;text-align:center}
+.prm-line{
+  font-family:var(--serif);
+  font-size:clamp(1rem,2.5vw,1.4rem);color:var(--text);line-height:1.6;
+  opacity:0;transform:translateY(16px);
+  transition:all .8s var(--ease);font-style:italic;font-weight:400;
+}
+.prm-line.vis{opacity:1;transform:none}
+.prm-sig{font-family:var(--sans);font-size:1.1rem;color:var(--rose);margin-top:8px;font-weight:600;font-style:normal;letter-spacing:.5px}
+
+/* =====================================================
+   PAGE 9  FINAL
+   ===================================================== */
+#p9{background:radial-gradient(ellipse at 50% 60%,#1e0810 0%,#050510 70%);text-align:center}
+#petals-c{position:absolute;inset:0;pointer-events:none}
+
+.final-hearts{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.fh2{position:absolute;opacity:0;animation:floatH2 linear infinite}
+@keyframes floatH2{
+  0%{opacity:0;transform:translateY(100vh) scale(.5)}
+  15%{opacity:.7}
+  85%{opacity:.3}
+  100%{opacity:0;transform:translateY(-10vh) scale(1.3)}
+}
+
+.final-over{font-family:var(--sans);font-size:.78rem;color:var(--muted);letter-spacing:4px;text-transform:uppercase;margin-bottom:20px;font-weight:300}
+.final-collage{display:flex;gap:8px;margin-bottom:28px;flex-wrap:wrap;justify-content:center;max-width:520px}
+.col-img{width:80px;height:80px;border-radius:12px;object-fit:cover;
+  border:2px solid rgba(255,107,138,.25);animation:slowZ 8s ease-in-out infinite alternate;background:rgba(255,255,255,.05)}
+@keyframes slowZ{from{transform:scale(1)}to{transform:scale(1.06)}}
+.final-name{
+  font-family:var(--serif);
+  font-size:clamp(2.2rem,7vw,4.5rem);font-weight:900;
+  background:linear-gradient(135deg,var(--rose),var(--gold),var(--lav));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
+  margin-bottom:10px;
+}
+.forever-tag{font-family:var(--sans);font-size:1rem;color:var(--muted);letter-spacing:4px;text-transform:uppercase;
+  margin-bottom:40px;font-weight:300}
+
+/* =====================================================
+   PAGE INDICATOR (top right mini counter)
+   ===================================================== */
+#page-counter{display:none}
+.cel-btn{
+  animation:celPulse 1.8s ease-in-out infinite;
+}
+.cel-btn:hover{animation:celWiggle .5s ease-in-out infinite}
+.cel-btn:active{transform:scale(.92)}
+@keyframes celPulse{
+  0%,100%{transform:scale(1);box-shadow:0 8px 28px rgba(255,107,138,.35)}
+  50%{transform:scale(1.06);box-shadow:0 10px 34px rgba(255,107,138,.55)}
+}
+@keyframes celWiggle{
+  0%,100%{transform:rotate(0deg) scale(1.06)}
+  25%{transform:rotate(-4deg) scale(1.08)}
+  75%{transform:rotate(4deg) scale(1.08)}
+}
+.cel-btn-top{margin-bottom:24px}
+</style>
+</head>
+<body>
+
+<!-- FX overlay -->
+<div id="fx" aria-hidden="true"></div>
+
+<!-- Page counter (top-right) -->
+
+<!-- Lightbox -->
+<div id="lb" role="dialog" aria-modal="true" aria-label="Photo lightbox">
+  <button class="lb-close" id="lb-close" aria-label="Close">✕</button>
+  <button class="lb-nav" id="lb-prev" aria-label="Previous photo">‹</button>
+  <img id="lb-img" src="" alt="Memory photo">
+  <button class="lb-nav" id="lb-next" aria-label="Next photo">›</button>
+  <p class="lb-cap" id="lb-cap"></p>
+</div>
+
+<div id="app">
+
+<!-- PAGE 1  INTRO -->
+<section class="page active" id="p1" aria-label="Introduction">
+  <canvas id="stars-c" aria-hidden="true"></canvas>
+  <div class="glow-orb" aria-hidden="true"></div>
+  <div class="fhearts-wrap" id="fhearts" aria-hidden="true"></div>
+  <p class="intro-over">For My Bestest Friend ❤️</p>
+  <h1 class="intro-name" aria-live="polite"><span id="typed"></span><span id="cursor" aria-hidden="true"></span></h1>
+  <p class="intro-tag" id="intro-tag">My classmate, my best online friend — this little surprise is all yours 😄💬</p>
+  <button class="btn" id="begin-btn">Begin Our Journey ✨</button>
+</section>
+
+<!-- PAGE 2  STORY -->
+<section class="page off-right" id="p2" aria-label="Our Story">
+  <p class="page-eyebrow">Chapter One</p>
+  <h2 class="title">Our Story</h2>
+  <p class="subtitle">From classmates to best online friends — our story typed one chat at a time 💬</p>
+  <div class="tl-wrap">
+    <div class="timeline" id="timeline"></div>
+  </div>
+  <div class="page-nav">
+    <button class="btn-next" data-go="1">Photo Memories 📸</button>
+  </div>
+</section>
+
+<!-- PAGE 3  PHOTOS -->
+<section class="page off-right" id="p3" aria-label="Photo Memories">
+  <p class="page-eyebrow">Captured Moments</p>
+  <h2 class="title">Photo Memories</h2>
+  <p class="subtitle">Hover each photo to see the memory — tap to open</p>
+  <div class="gallery-scroll">
+    <div class="photo-grid" id="photo-grid"></div>
+  </div>
+  <div class="page-nav">
+    <button class="btn-next" data-go="1">Why You're Amazing 💖</button>
+  </div>
+</section>
+
+<!-- PAGE 4  REASONS -->
+<section class="page off-right" id="p4" aria-label="Reasons You're Amazing">
+  <p class="page-eyebrow">Why You're Incredible</p>
+  <h2 class="title">You Are Amazing Because…</h2>
+  <p class="subtitle">Hover each card to reveal your superpower</p>
+  <div class="reasons-grid" id="reasons-grid"></div>
+  <div class="page-nav">
+    <button class="btn-next" data-go="1">Memory Book ✨</button>
+  </div>
+</section>
+
+<!-- PAGE 5  MEMORY BOOK -->
+<section class="page off-right" id="p5" aria-label="Memory Book">
+  <p class="page-eyebrow">Our Memories</p>
+  <h2 class="title">Memory Book</h2>
+  <p class="subtitle">Every chat, every call, every moment saved right here 💌</p>
+  <div class="mem-slider">
+    <div class="mem-track">
+      <div class="mem-slides" id="mem-slides"></div>
+    </div>
+    <div class="sl-ctrl">
+      <button class="sl-btn" id="mem-prev" aria-label="Previous memory">‹</button>
+      <div class="sl-dots" id="sl-dots"></div>
+      <button class="sl-btn" id="mem-next" aria-label="Next memory">›</button>
+    </div>
+  </div>
+  <div class="page-nav">
+    <button class="btn-next" data-go="1">Celebrate You 🎉</button>
+  </div>
+</section>
+
+<!-- PAGE 6  CELEBRATE -->
+<section class="page off-right" id="p6" aria-label="Celebration">
+  <canvas id="conf-c" aria-hidden="true"></canvas>
+  <div class="balloons" id="balloons" aria-hidden="true"></div>
+  <p class="cel-msg">The Best Online Classmate I Could Ever Have ❤️</p>
+  <p class="cel-sub">We can't meet a lot, but every chat and every call makes up for it all. You deserve this! 🎉</p>
+  <div class="page-nav">
+    <button class="btn-next" data-go="1">A Secret Awaits 🔒</button>
+  </div>
+</section>
+
+<!-- PAGE 7  SECRET — audio message -->
+<section class="page off-right" id="p7" aria-label="Secret Message">
+  <div class="sec-lock" aria-hidden="true">🔒</div>
+  <h2 class="sec-title">A Secret Message For You</h2>
+  <p class="sec-tease">Psst… you know how we talk for hours? This one goes even deeper. Just for you 🤫</p>
+  <button class="unlock-btn" id="unlock-btn">🗝️ Unlock Secret</button>
+  <div id="sec-content" aria-live="polite">
+    <div class="env-wrap" aria-hidden="true">💌</div>
+    <div id="audio-sec"></div>
+  </div>
+  <div class="page-nav">
+    <button class="btn-next" data-go="1">My Promise To You 🌸</button>
+  </div>
+</section>
+
+<!-- PAGE 8  PROMISE -->
+<section class="page off-right" id="p8" aria-label="Friendship Promise">
+  <div class="prm-orb" aria-hidden="true"></div>
+  <p class="page-eyebrow">Always & Forever</p>
+  <h2 class="title">My Promise To You</h2>
+  <div class="prm-lines" id="prm-lines">
+    <p class="prm-line">We started as classmates,</p>
+    <p class="prm-line">and somehow became each other's favourite person online.</p>
+    <p class="prm-line">We can't meet a lot, but every chat, every call —</p>
+    <p class="prm-line">feels like you're right here.</p>
+    <p class="prm-line">I promise to always be on the other side of the screen for you. 💬</p>
+    <p class="prm-line prm-sig">— Your Classmate & Online Bestie ❤️</p>
+  </div>
+  <div class="page-nav">
+    <button class="btn-next" data-go="1">The Finale 💝</button>
+  </div>
+</section>
+
+<!-- PAGE 9  FINAL -->
+<section class="page off-right" id="p9" aria-label="Final Goodbye">
+  <canvas id="petals-c" aria-hidden="true"></canvas>
+  <div class="final-hearts" id="final-hearts" aria-hidden="true"></div>
+  <p class="final-over">Made With Love For</p>
+  <div class="final-collage" id="final-collage" aria-hidden="true"></div>
+  <h2 class="final-name" id="final-name"></h2>
+  <p class="forever-tag">💬 Classmates Forever · Online Besties Always 💬</p>
+  <button class="btn" id="replay-btn">Replay Journey 🔄</button>
+</section>
+
+</div><!-- #app -->
+
+<!-- Progress dots indicator -->
+
+<script>
+/* ============================================================
+   CONFIG — edit this section only
+   ============================================================ */
+const CONFIG = {
+
+  friendName: "Sandhaya",
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     PHOTOS — put your own image links/files here
+     - Replace the "src" value with your image URL,
+       or a local path like "images/photo1.jpg"
+       (place an "images" folder next to this HTML file)
+     - "label" is the caption shown for that photo
+     - Add, remove, or reorder entries as you like
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  photos: [
+    { src:"https://i.postimg.cc/rwWT0yJR/Screenshot-2026-06-13-12-18-47-81-40deb401b9ffe8e1df2f1cc5ba480b12.jpg", label:"That day you enjoyed 🥰" },
+    { src:"https://i.postimg.cc/KY22nXqG/Screenshot-2026-06-13-12-21-23-67-40deb401b9ffe8e1df2f1cc5ba480b12.jpg", label:"your little memory 💙" },
+    { src:"https://i.postimg.cc/3xph4rBR/Screenshot-2026-06-13-12-21-29-64-40deb401b9ffe8e1df2f1cc5ba480b12.jpg", label:"Watching the sunset 🌅" },
+    { src:"https://i.postimg.cc/y89Kg6PJ/Screenshot-2026-06-13-12-20-46-41-40deb401b9ffe8e1df2f1cc5ba480b12.jpg", label:"Best birthday ever 🎂" },
+    { src:"https://i.postimg.cc/DfJ4jLfd/646a1b96-7b8d-419b-8ae2-1e97f4c128b2.png", label:"When we were crazy 🎉" },
+    { src:"https://i.postimg.cc/XvbbwMHN/Screenshot-2026-06-13-12-17-50-49-40deb401b9ffe8e1df2f1cc5ba480b12.jpg", label:"Picnic in the park 🌿" },
+  ],
+
+  /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+     SECRET AUDIO — set to your file path
+     Place your audio file in an "audio" folder next to this HTML
+     Example: secretAudio: "audio/song.mp3"
+     ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ */
+  secretAudio: "audio/song.mp3",
+
+  memories: [
+    { icon:"🏫", title:"Classmates First",       text:"It started in class — sitting in the same room, probably not realising this would turn into the best online friendship ever." },
+    { icon:"💬", title:"That One Long Chat",      text:"We started with one message and ended up talking for hours. Classic us — one topic always leads to a hundred more." },
+    { icon:"📞", title:"The Call That Never Ended", text:"We said 'okay bye' at least five times and just kept going. That call was supposed to be 10 minutes. It was not." },
+    { icon:"🌙", title:"Late Night Online",       text:"Past midnight, both of us should be sleeping — but here we are, typing away about life, dreams, and the most random things." },
+    { icon:"🌈", title:"Even Though We're Far",  text:"We can't meet a lot, but honestly every chat feels like no time has passed. That's what makes this friendship so special." },
+  ],
+
+  reasons: [
+    { icon:"💬", title:"Your Texts",      text:"You always know what to say. Even one message from you can flip a bad day completely around." },
+    { icon:"😂", title:"Your Humor",      text:"Your memes are genuinely unmatched. You make me laugh through a screen — that's a rare superpower." },
+    { icon:"🌟", title:"Your Realness",   text:"No filter, no fake. You're always 100% yourself and that's honestly one of my favourite things about you." },
+    { icon:"📞", title:"Your Presence",   text:"Even on calls, your energy just lifts everything. I always hang up feeling way better than before." },
+    { icon:"🤗", title:"Your Kindness",   text:"You check in, you care, you show up — even when we're far apart. That means more than you know." },
+    { icon:"🔥", title:"Your Vibe",       text:"Classmates first, best friends always. You make even the most boring days feel worth living." },
+  ],
+};
+/* ============================================================
+   END CONFIG
+   ============================================================ */
+
+/* ————————————————————————————
+   PAGE ROUTER — NO auto-advance, pure button navigation
+   ———————————————————————————— */
+const PAGES = ['p1','p2','p3','p4','p5','p6','p7','p8','p9'];
+const LABELS = ['Intro','Our Story','Photos','Reasons','Memories','Celebrate','Secret','Promise','Finale'];
+const TOTAL  = PAGES.length;
+
+let current    = 0;
+let navigating = false;
+
+function updateNav() {
+  /* nav dots and page counter removed */
+}
+
+function goTo(target, direction) {
+  if (navigating || target === current || target < 0 || target >= TOTAL) return;
+  navigating = true;
+
+  const dir    = direction !== undefined ? direction : (target > current ? 1 : -1);
+  const fromEl = document.getElementById(PAGES[current]);
+  const toEl   = document.getElementById(PAGES[target]);
+
+  toEl.classList.remove('active','off-left','off-right','exit-left');
+  toEl.classList.add(dir > 0 ? 'off-right' : 'off-left');
+  void toEl.offsetWidth;
+  toEl.classList.remove('off-right','off-left');
+  toEl.classList.add('active');
+  fromEl.classList.remove('active');
+  fromEl.classList.add(dir > 0 ? 'exit-left' : 'off-right');
+
+  current = target;
+  updateNav();
+  onPageEnter(current);
+
+  setTimeout(() => {
+    fromEl.classList.remove('exit-left');
+    fromEl.classList.add(dir > 0 ? 'off-left' : 'off-right');
+    navigating = false;
+  }, 750);
+}
+
+/* Delegated listeners for all in-page Next / Back buttons */
+document.getElementById('app').addEventListener('click', e => {
+  const btn = e.target.closest('[data-go]');
+  if (!btn) return;
+  const dir = parseInt(btn.dataset.go, 10);
+  goTo(current + dir, dir);
+});
+
+/* Keyboard nav */
+document.addEventListener('keydown', e => {
+  if (document.getElementById('lb').classList.contains('open')) return;
+  if (e.key==='ArrowRight'||e.key==='ArrowDown'||e.key==='PageDown') goTo(current+1, 1);
+  if (e.key==='ArrowLeft' ||e.key==='ArrowUp'  ||e.key==='PageUp')   goTo(current-1,-1);
+});
+
+/* Begin & replay */
+document.getElementById('begin-btn').addEventListener('click', () => goTo(1, 1));
+document.getElementById('replay-btn').addEventListener('click', () => goTo(0,-1));
+
+/* ————————————————————————————
+   PAGE-ENTER HOOKS
+   ———————————————————————————— */
+const entered = {};
+function onPageEnter(i) {
+  const id = PAGES[i];
+  if (!entered[id]) {
+    entered[id] = true;
+    if (id==='p2') buildTimeline();
+    if (id==='p3') buildGallery();
+    if (id==='p4') buildReasons();
+    if (id==='p5') buildMemories();
+    if (id==='p8') animatePromise();
+    if (id==='p9') initFinal();
+  }
+  if (id==='p6') autoCelebrate();
+  if (id==='p8') animatePromise();
+  if (id==='p9') initFinal();
+}
+
+/* ————————————————————————————
+   PAGE 1  STARS + TYPING + HEARTS
+   ———————————————————————————— */
+(function initStars() {
+  const c = document.getElementById('stars-c');
+  if (!c) return;
+  const ctx = c.getContext('2d');
+  let stars = [];
+  function resize() {
+    c.width=c.parentElement.offsetWidth; c.height=c.parentElement.offsetHeight;
+    stars=[];
+    const n=Math.floor(c.width*c.height/3200);
+    for(let i=0;i<n;i++) stars.push({
+      x:Math.random()*c.width, y:Math.random()*c.height,
+      r:Math.random()*1.4+.2, phase:Math.random()*Math.PI*2,
+      speed:Math.random()*.006+.001
+    });
+  }
+  function draw(t) {
+    ctx.clearRect(0,0,c.width,c.height);
+    stars.forEach(s=>{
+      const a=.25+.75*(.5+.5*Math.sin(t*s.speed*60+s.phase));
+      ctx.beginPath(); ctx.arc(s.x,s.y,s.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(255,255,255,${a})`; ctx.fill();
+    });
+    requestAnimationFrame(draw);
+  }
+  resize();
+  new ResizeObserver(resize).observe(c.parentElement);
+  requestAnimationFrame(draw);
+})();
+
+(function typing() {
+  const el=document.getElementById('typed');
+  const cur=document.getElementById('cursor');
+  const name=CONFIG.friendName||'My Best Friend';
+  let i=0;
+  function t(){
+    if(i<=name.length){ el.textContent=name.slice(0,i++); setTimeout(t,i===1?900:75+Math.random()*55); }
+    else{ setTimeout(()=>{ if(cur) cur.style.display='none'; },2000); }
+  }
+  setTimeout(t,1100);
+})();
+
+(function floatingHearts() {
+  const wrap=document.getElementById('fhearts');
+  if(!wrap) return;
+  const em=['❤️','💕','💖','💗','💓','💝','🩷'];
+  let n=0;
+  function spawn(){
+    if(n>18){ setTimeout(spawn,1000); return; }
+    const h=document.createElement('span');
+    h.className='fh'; h.setAttribute('aria-hidden','true');
+    h.textContent=em[Math.floor(Math.random()*em.length)];
+    h.style.left=Math.random()*94+'%';
+    h.style.fontSize=(1+Math.random()*1.2)+'rem';
+    const d=6+Math.random()*6;
+    h.style.animationDuration=d+'s';
+    wrap.appendChild(h); n++;
+    setTimeout(()=>{ h.remove(); n--; },d*1000);
+    setTimeout(spawn,600+Math.random()*700);
+  }
+  spawn();
+})();
+
+/* ————————————————————————————
+   PAGE 2  TIMELINE
+   ———————————————————————————— */
+function buildTimeline() {
+  const tl=document.getElementById('timeline');
+  if(!tl||tl.children.length) return;
+  const items=[
+    {icon:'🏫',title:'Classmates First',text:'It all started in class — sitting in the same room, not knowing yet that this would become the most unexpected and wonderful friendship.'},
+    {icon:'💬',title:'The Chats Began',text:"One message turned into two, two turned into hundreds. Suddenly we were talking every day and couldn't imagine not doing so."},
+    {icon:'📞',title:'The Calls',text:"Calls that were supposed to be short ended up lasting forever. We talked about everything — school, life, dreams, and pure nonsense."},
+    {icon:'😂',title:'Memes & Inside Jokes',text:"Our chat is basically a meme archive. Nobody else would understand half our jokes — and honestly that's exactly how we like it."},
+    {icon:'🌐',title:'Distance? Just a Number',text:"We can't meet a lot, but every time we chat it feels like no time has passed at all. Online but never far."},
+  ];
+  items.forEach((item,i)=>{
+    const el=document.createElement('div');
+    el.className='tl-item'+(i%2===1?' right':'');
+    const card=`<div class="tl-card"><div class="tl-icon" aria-hidden="true">${item.icon}</div><h3>${item.title}</h3><p>${item.text}</p></div>`;
+    const dot=`<div class="tl-dot" aria-hidden="true"></div>`;
+    const sp=`<div class="tl-spacer"></div>`;
+    el.innerHTML=i%2===1?sp+dot+card:card+dot+sp;
+    tl.appendChild(el);
+  });
+  const obs=new IntersectionObserver(ens=>ens.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('vis'); }),{root:tl.parentElement,threshold:.15});
+  tl.querySelectorAll('.tl-item').forEach((el,i)=>{ el.style.transitionDelay=(i*.1)+'s'; obs.observe(el); });
+  setTimeout(()=>tl.querySelectorAll('.tl-item').forEach(el=>{ const r=el.getBoundingClientRect(); if(r.top<window.innerHeight) el.classList.add('vis'); }),100);
+}
+
+/* ————————————————————————————
+   PAGE 3  GALLERY
+   ———————————————————————————— */
+function buildGallery() {
+  const grid=document.getElementById('photo-grid');
+  if(!grid||grid.children.length) return;
+  const photos=CONFIG.photos&&CONFIG.photos.length?CONFIG.photos:[];
+  const emojis=['🌸','💕','🌻','🌅','🎂','🌿','💫','🎉','✨','🌙'];
+  let lbIdx=0;
+  const all=[...photos];
+
+  if(!all.length){
+    for(let i=0;i<6;i++){
+      const pf=document.createElement('div'); pf.className='photo-flip'; pf.style.animationDelay=(i*.1)+'s';
+      pf.innerHTML=`<div class="pf-inner"><div class="pf-front"><div class="ph-placeholder">📷</div></div><div class="pf-back"><div class="pf-emoji">${emojis[i%emojis.length]}</div><p class="pf-label">Memory ${i+1}</p><span class="pf-hint">A moment with you</span></div></div>`;
+      grid.appendChild(pf);
+    }
+    return;
+  }
+
+  all.forEach((ph,i)=>{
+    const pf=document.createElement('div'); pf.className='photo-flip'; pf.tabIndex=0;
+    pf.setAttribute('aria-label',ph.label||`Photo ${i+1}`);
+    pf.style.animationDelay=(i*.07)+'s';
+    const imgEl=`<img loading="lazy" alt="${ph.label||`Photo ${i+1}`}" src="${ph.src||''}" onerror="this.parentElement.innerHTML='<div class=ph-placeholder>📷</div>'">`;
+    pf.innerHTML=`<div class="pf-inner"><div class="pf-front">${imgEl}</div><div class="pf-back"><div class="pf-emoji">${emojis[i%emojis.length]}</div><p class="pf-label">${ph.label||'A precious memory'}</p><span class="pf-hint">Tap to open ✨</span></div></div>`;
+    pf.addEventListener('click',()=>{ if(!pf.classList.contains('flipped')) pf.classList.add('flipped'); else openLb(i); });
+    pf.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' ') pf.click(); });
+    grid.appendChild(pf);
+  });
+
+  function openLb(i){
+    lbIdx=i;
+    const lb=document.getElementById('lb');
+    document.getElementById('lb-img').src=all[i].src||'';
+    document.getElementById('lb-img').alt=all[i].label||'Photo';
+    document.getElementById('lb-cap').textContent=all[i].label||'';
+    lb.classList.add('open');
+  }
+  function closeLb(){ document.getElementById('lb').classList.remove('open'); }
+  function lbNav(d){ lbIdx=(lbIdx+d+all.length)%all.length; openLb(lbIdx); }
+
+  document.getElementById('lb-close').addEventListener('click',closeLb);
+  document.getElementById('lb-prev').addEventListener('click',()=>lbNav(-1));
+  document.getElementById('lb-next').addEventListener('click',()=>lbNav(1));
+  document.getElementById('lb').addEventListener('click',e=>{ if(e.target===document.getElementById('lb')) closeLb(); });
+  document.addEventListener('keydown',e=>{
+    if(!document.getElementById('lb').classList.contains('open')) return;
+    if(e.key==='Escape') closeLb();
+    if(e.key==='ArrowLeft') lbNav(-1);
+    if(e.key==='ArrowRight') lbNav(1);
+  });
+}
+
+/* ————————————————————————————
+   PAGE 4  REASONS
+   ———————————————————————————— */
+function buildReasons() {
+  const grid=document.getElementById('reasons-grid');
+  if(!grid||grid.children.length) return;
+  const items=CONFIG.reasons&&CONFIG.reasons.length?CONFIG.reasons:[{icon:'💖',title:"You're Kind",text:'Your kindness makes the world a better place.'}];
+  items.forEach((r,i)=>{
+    const c=document.createElement('div'); c.className='flip'; c.tabIndex=0;
+    c.setAttribute('aria-label',`${r.title}: ${r.text}`);
+    c.style.transitionDelay=(i*.07)+'s';
+    c.innerHTML=`<div class="flip-inner"><div class="flip-f"><div class="flip-icon" aria-hidden="true">${r.icon}</div><h3>${r.title}</h3></div><div class="flip-b"><p>${r.text}</p></div></div>`;
+    grid.appendChild(c);
+    setTimeout(()=>c.classList.add('vis'),120+i*80);
+  });
+}
+
+/* ————————————————————————————
+   PAGE 5  MEMORY SLIDER
+   ———————————————————————————— */
+function buildMemories() {
+  const slides=document.getElementById('mem-slides');
+  const dotsEl=document.getElementById('sl-dots');
+  if(!slides||slides.children.length) return;
+  const mems=CONFIG.memories&&CONFIG.memories.length?CONFIG.memories:[{icon:'💕',title:'Our Friendship',text:'The greatest story I ever got to be part of.'}];
+  let cur2=0, timer;
+  mems.forEach((m,i)=>{
+    const s=document.createElement('div'); s.className='mem-slide';
+    s.innerHTML=`<div class="mem-icon" aria-hidden="true">${m.icon}</div><h3>${m.title}</h3><p>${m.text}</p>`;
+    slides.appendChild(s);
+    const d=document.createElement('button'); d.className='sdot'+(i===0?' on':'');
+    d.setAttribute('aria-label',`Slide ${i+1}`);
+    d.addEventListener('click',()=>{ clearTimeout(timer); go(i); sched(); });
+    dotsEl.appendChild(d);
+  });
+  function go(i){ cur2=(i+mems.length)%mems.length; slides.style.transform=`translateX(-${cur2*100}%)`; dotsEl.querySelectorAll('.sdot').forEach((d,j)=>d.classList.toggle('on',j===cur2)); }
+  function sched(){ timer=setTimeout(()=>{ go(cur2+1); sched(); },4800); }
+  sched();
+  document.getElementById('mem-prev').addEventListener('click',()=>{ clearTimeout(timer); go(cur2-1); sched(); });
+  document.getElementById('mem-next').addEventListener('click',()=>{ clearTimeout(timer); go(cur2+1); sched(); });
+}
+
+/* ————————————————————————————
+   PAGE 6  CONFETTI + BALLOONS
+   ———————————————————————————— */
+(function initConf() {
+  const c=document.getElementById('conf-c');
+  if(!c) return;
+  const ctx=c.getContext('2d');
+  let parts=[],raf;
+  function resize(){ c.width=c.parentElement.offsetWidth; c.height=c.parentElement.offsetHeight; }
+  new ResizeObserver(resize).observe(c.parentElement); resize();
+  window._burst=function(x,y,n){
+    const cols=['#FF6B8A','#FFD700','#C9B8FF','#FFB3C6','#7FDBFF','#2ECC40'];
+    for(let i=0;i<n;i++) parts.push({x,y,vx:(Math.random()-.5)*10,vy:-Math.random()*8-2,
+      r:Math.random()*6+3,col:cols[~~(Math.random()*cols.length)],a:1,rot:Math.random()*360,rv:(Math.random()-.5)*8,sq:Math.random()>.5});
+    if(!raf) loop();
+  };
+  function loop(){
+    ctx.clearRect(0,0,c.width,c.height);
+    parts=parts.filter(p=>p.a>.01);
+    parts.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.vy+=.18; p.vx*=.99; p.rot+=p.rv; p.a-=.012;
+      ctx.save(); ctx.globalAlpha=p.a; ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180); ctx.fillStyle=p.col;
+      if(p.sq){ ctx.fillRect(-p.r,-p.r/2,p.r*2,p.r); }
+      else{ ctx.beginPath(); ctx.arc(0,0,p.r,0,Math.PI*2); ctx.fill(); }
+      ctx.restore();
+    });
+    if(parts.length) raf=requestAnimationFrame(loop); else raf=null;
+  }
+})();
+
+let celebDone=false;
+function autoCelebrate(){
+  if(celebDone) return; celebDone=true;
+  setTimeout(()=>{
+    for(let i=0;i<6;i++) setTimeout(()=>{
+      const c=document.getElementById('conf-c');
+      if(window._burst) window._burst(Math.random()*c.width,c.height*.3,60);
+    },i*200);
+    spawnBalloons();
+  },400);
+}
+
+document.querySelectorAll('[data-cel-btn]').forEach(btn=>btn.addEventListener('click',()=>{
+  const c=document.getElementById('conf-c');
+  for(let i=0;i<8;i++) setTimeout(()=>{ if(window._burst) window._burst(Math.random()*c.width,c.height*.3,70); },i*150);
+  spawnBalloons();
+  spawnFX(btn);
+}));
+
+function spawnBalloons(){
+  const wrap=document.getElementById('balloons');
+  if(!wrap) return;
+  ['🎈','🎉','🎊','🎈','💝','🎈','🎊','🎉'].forEach((em,i)=>{
+    const b=document.createElement('div'); b.className='balloon'; b.setAttribute('aria-hidden','true');
+    b.textContent=em; b.style.left=(6+i*11)+'%';
+    b.style.fontSize=(2+Math.random())+'rem';
+    b.style.animationDuration=(6+Math.random()*5)+'s';
+    b.style.animationDelay=(i*.3)+'s';
+    wrap.appendChild(b); setTimeout(()=>b.remove(),12000);
+  });
+}
+
+/* ————————————————————————————
+   PAGE 7  SECRET AUDIO PLAYER
+   ———————————————————————————— */
+(function initSecret(){
+  const btn=document.getElementById('unlock-btn');
+  const content=document.getElementById('sec-content');
+  if(!btn) return;
+
+  const done=localStorage.getItem('sec_unlocked')==='1';
+  if(done){ btn.style.display='none'; reveal(false); }
+
+  btn.addEventListener('click',()=>{
+    localStorage.setItem('sec_unlocked','1');
+    btn.style.display='none';
+    reveal(true);
+    heartExplosion();
+  });
+
+  function reveal(animate){
+    if(!content) return;
+    content.classList.add('open');
+    buildAudioPlayer();
+    if(animate){ spawnFX(content); setTimeout(()=>spawnFX(content),600); }
+  }
+
+  function buildAudioPlayer(){
+    const wrap=document.getElementById('audio-sec');
+    if(!wrap||wrap.children.length) return;
+
+    if(!CONFIG.secretAudio){
+      wrap.innerHTML=`<div class="no-audio-msg"><span>🎙️</span>To add your secret audio, set <code style="background:rgba(255,255,255,.08);padding:4px 10px;border-radius:6px;font-size:.82rem">secretAudio: "audio/song.mp3"</code> in the CONFIG section at the top of the script.</div>`;
+      return;
+    }
+
+    wrap.innerHTML=`
+      <div class="audio-premium">
+        <div class="audio-premium-header">
+          <div class="audio-album-art" id="album-art">🎵</div>
+          <div class="audio-meta">
+            <div class="trk">Secret Voice Message 💌</div>
+            <div class="sub">Just for you · Private</div>
+          </div>
+        </div>
+        <div class="audio-progress-wrap">
+          <div class="prog-track" id="prog-track" role="slider" aria-label="Audio progress">
+            <div class="prog-fill" id="prog-fill"></div>
+          </div>
+          <div class="prog-times">
+            <span id="a-cur">0:00</span>
+            <span id="a-dur">0:00</span>
+          </div>
+        </div>
+        <div class="audio-controls">
+          <button id="play-btn" aria-label="Play/Pause">▶</button>
+        </div>
+        <div class="vol-row">
+          <span class="vol-icon">🔈</span>
+          <input type="range" class="vol-slider" id="vol-slider" min="0" max="1" step="0.02" value="1" aria-label="Volume">
+          <span class="vol-icon">🔊</span>
+        </div>
+      </div>
+      <audio id="audio-el" preload="metadata" src="${CONFIG.secretAudio}"></audio>`;
+
+    const pb=document.getElementById('play-btn');
+    const fill=document.getElementById('prog-fill');
+    const cur=document.getElementById('a-cur');
+    const dur=document.getElementById('a-dur');
+    const track=document.getElementById('prog-track');
+    const art=document.getElementById('album-art');
+    const vol=document.getElementById('vol-slider');
+    const audioEl=document.getElementById('audio-el');
+    let playing=false;
+
+    function fmt(s){ if(!isFinite(s)) return'0:00'; const m=~~(s/60),sec=~~(s%60); return `${m}:${String(sec).padStart(2,'0')}`; }
+
+    audioEl.addEventListener('loadedmetadata',()=>{ if(dur) dur.textContent=fmt(audioEl.duration); });
+    audioEl.addEventListener('timeupdate',()=>{
+      const pct=audioEl.duration?(audioEl.currentTime/audioEl.duration)*100:0;
+      if(fill) fill.style.width=pct+'%'; if(cur) cur.textContent=fmt(audioEl.currentTime);
+    });
+    audioEl.addEventListener('ended',()=>{ playing=false; if(pb) pb.textContent='▶'; if(art) art.classList.remove('playing'); });
+    audioEl.addEventListener('error',()=>{
+      wrap.innerHTML=`<div class="no-audio-msg"><span>🎵</span>Couldn't load the audio file.<br>Make sure <code style="background:rgba(255,255,255,.08);padding:2px 8px;border-radius:4px;font-size:.8rem">${CONFIG.secretAudio}</code> is next to this HTML file.</div>`;
+    });
+
+    pb&&pb.addEventListener('click',()=>{
+      if(playing){ audioEl.pause(); pb.textContent='▶'; playing=false; art&&art.classList.remove('playing'); }
+      else{ audioEl.play().catch(()=>{}); pb.textContent='⏸'; playing=true; art&&art.classList.add('playing'); }
+    });
+    track&&track.addEventListener('click',e=>{
+      const rct=track.getBoundingClientRect();
+      if(audioEl.duration) audioEl.currentTime=(e.clientX-rct.left)/rct.width*audioEl.duration;
+    });
+    vol&&vol.addEventListener('input',()=>{ audioEl.volume=parseFloat(vol.value); });
+  }
+})();
+
+/* ————————————————————————————
+   HEART EXPLOSION
+   ———————————————————————————— */
+function heartExplosion(){
+  const em=['❤️','💖','💗','💓','💝','💘'];
+  const style=document.createElement('style');
+  style.textContent='@keyframes hPop{0%{transform:scale(0) rotate(-20deg);opacity:1}50%{transform:scale(1.9) rotate(10deg);opacity:1}100%{transform:scale(.4) translateY(-50px) rotate(-5deg);opacity:0}}';
+  document.head.appendChild(style);
+  for(let i=0;i<20;i++) setTimeout(()=>{
+    const h=document.createElement('div');
+    Object.assign(h.style,{position:'fixed',left:(15+Math.random()*70)+'vw',top:(15+Math.random()*70)+'vh',
+      fontSize:(1.4+Math.random()*1.4)+'rem',pointerEvents:'none',zIndex:'9998',animation:'hPop 1.2s forwards'});
+    h.textContent=em[~~(Math.random()*em.length)]; document.body.appendChild(h);
+    setTimeout(()=>h.remove(),1300);
+  },i*70);
+}
+
+/* ————————————————————————————
+   PAGE 8  PROMISE
+   ———————————————————————————— */
+function animatePromise(){
+  document.querySelectorAll('.prm-line').forEach((l,i)=>{
+    l.classList.remove('vis');
+    setTimeout(()=>l.classList.add('vis'),200+i*220);
+  });
+}
+
+/* ————————————————————————————
+   PAGE 9  FINAL
+   ———————————————————————————— */
+function initFinal(){
+  const nameEl=document.getElementById('final-name');
+  if(nameEl&&!nameEl._set){ nameEl.textContent=CONFIG.friendName||'My Best Friend'; nameEl._set=true; }
+
+  const col=document.getElementById('final-collage');
+  if(col&&!col.children.length){
+    const all=[...(CONFIG.photos||[])].slice(0,6);
+    all.forEach(p=>{
+      const img=document.createElement('img'); img.className='col-img';
+      img.loading='lazy'; img.src=p.src||''; img.alt=p.label||'';
+      img.onerror=()=>img.style.display='none'; col.appendChild(img);
+    });
+  }
+
+  const fh=document.getElementById('final-hearts');
+  if(fh&&!fh.children.length){
+    const em=['❤️','💕','💖','🌸','✨','💝'];
+    let n=0;
+    function sp(){
+      if(n>14){ setTimeout(sp,900); return; }
+      const h=document.createElement('span'); h.className='fh2'; h.setAttribute('aria-hidden','true');
+      h.textContent=em[~~(Math.random()*em.length)];
+      h.style.left=Math.random()*94+'%'; h.style.fontSize=(.8+Math.random())+'rem';
+      const d=8+Math.random()*8; h.style.animationDuration=d+'s'; fh.appendChild(h); n++;
+      setTimeout(()=>{ h.remove(); n--; },d*1000); setTimeout(sp,600+Math.random()*700);
+    } sp();
+  }
+
+  const c=document.getElementById('petals-c');
+  if(!c||c._init) return; c._init=true;
+  const ctx=c.getContext('2d'); let pets=[];
+  function resize(){ c.width=c.parentElement.offsetWidth; c.height=c.parentElement.offsetHeight; }
+  new ResizeObserver(resize).observe(c.parentElement); resize();
+  const cols=['#FF6B8A','#FFB3C6','#C9B8FF','#FFD6E0'];
+  for(let i=0;i<30;i++) pets.push({x:Math.random()*c.width,y:Math.random()*c.height*-1,
+    vx:(Math.random()-.5)*1.2,vy:.6+Math.random()*.8,r:4+Math.random()*6,
+    rot:Math.random()*360,rv:(Math.random()-.5)*2,a:.35+Math.random()*.4,
+    col:cols[~~(Math.random()*4)]});
+  (function loop(){
+    ctx.clearRect(0,0,c.width,c.height);
+    pets.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy; p.rot+=p.rv; p.vx+=Math.sin(Date.now()*.001+p.y*.01)*.02;
+      if(p.y>c.height+20){ p.y=-20; p.x=Math.random()*c.width; }
+      ctx.save(); ctx.globalAlpha=p.a; ctx.translate(p.x,p.y); ctx.rotate(p.rot*Math.PI/180);
+      ctx.fillStyle=p.col; ctx.beginPath(); ctx.ellipse(0,0,p.r,p.r*1.8,0,0,Math.PI*2); ctx.fill(); ctx.restore();
+    });
+    requestAnimationFrame(loop);
+  })();
+
+  if(window._burst) setTimeout(()=>{
+    for(let i=0;i<8;i++) setTimeout(()=>window._burst(Math.random()*window.innerWidth,80,55),i*140);
+  },800);
+}
+
+/* ————————————————————————————
+   SPARKLE FX
+   ———————————————————————————— */
+function spawnFX(near){
+  const fx=document.getElementById('fx');
+  if(!fx) return;
+  const rect=near?near.getBoundingClientRect():{left:0,top:0,width:window.innerWidth,height:window.innerHeight};
+  const cols=['#FFD700','#FF6B8A','#C9B8FF','#fff','#FFB3C6'];
+  for(let i=0;i<14;i++) setTimeout(()=>{
+    const s=document.createElement('div'); s.className='sparkle'; s.setAttribute('aria-hidden','true');
+    s.style.left=(rect.left+Math.random()*rect.width)+'px';
+    s.style.top=(rect.top+Math.random()*rect.height)+'px';
+    s.style.background=cols[~~(Math.random()*cols.length)];
+    const sz=4+Math.random()*9+'px'; s.style.width=sz; s.style.height=sz;
+    fx.appendChild(s); setTimeout(()=>s.remove(),1100);
+  },i*55);
+}
+document.addEventListener('click',e=>spawnFX({left:e.clientX-16,top:e.clientY-16,width:32,height:32}));
+
+/* Kick off */
+updateNav();
+console.log(`💖 Made with love for ${CONFIG.friendName||'your best friend'}.`);
+</script>
+</body>
+</html>
