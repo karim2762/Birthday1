@@ -192,7 +192,8 @@ button:focus-visible{outline:2px solid var(--rose);outline-offset:3px}
 .intro-over{
   font-family:var(--sans);
   font-size:clamp(.8rem,2.5vw,1rem);color:var(--blush);letter-spacing:5px;
-  text-transform:uppercase;margin-bottom:16px;opacity:0;animation:fadeUp 1s .4s forwards;
+  text-transform:uppercase;margin-bottom:16px;opacity:0;
+  animation:fadeUp .8s .1s forwards;
   font-weight:300;
 }
 
@@ -202,6 +203,12 @@ button:focus-visible{outline:2px solid var(--rose);outline-offset:3px}
   background:linear-gradient(135deg,#fff 0%,var(--rose) 45%,var(--lav) 100%);
   -webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;
   min-height:1.2em;margin-bottom:24px;
+  opacity:0;transform:scale(.92);
+  animation:nameIn .9s .15s forwards;
+  filter:drop-shadow(0 0 0 rgba(255,107,138,0));
+}
+@keyframes nameIn{
+  to{opacity:1;transform:scale(1)}
 }
 #cursor{
   display:inline-block;width:3px;height:.85em;background:var(--rose);
@@ -213,7 +220,7 @@ button:focus-visible{outline:2px solid var(--rose);outline-offset:3px}
 .intro-tag{
   font-family:var(--serif);
   font-size:clamp(.9rem,2vw,1.1rem);color:var(--muted);font-style:italic;
-  margin-bottom:44px;opacity:0;animation:fadeUp 1s 2.6s forwards;
+  margin-bottom:44px;opacity:0;animation:fadeUp .9s 1.1s forwards;
 }
 
 .glow-orb{
@@ -661,7 +668,7 @@ button:focus-visible{outline:2px solid var(--rose);outline-offset:3px}
   <p class="intro-over">For My Bestest Friend ❤️</p>
   <h1 class="intro-name" aria-live="polite"><span id="typed"></span><span id="cursor" aria-hidden="true"></span></h1>
   <p class="intro-tag" id="intro-tag">My classmate, my best online friend — this little surprise is all yours 😄💬</p>
-  <button class="btn" id="begin-btn">Begin Our Journey ✨</button>
+  <button class="btn" id="begin-btn" style="opacity:0;animation:fadeUp .9s 1.6s forwards">Begin Our Journey ✨</button>
 </section>
 
 <!-- PAGE 2  STORY -->
@@ -786,7 +793,7 @@ button:focus-visible{outline:2px solid var(--rose);outline-offset:3px}
    ============================================================ */
 const CONFIG = {
 
-  friendName: "Sandhaya",
+  friendName: "Sandhya",
 
   /* ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
      PHOTOS — put your own image links/files here
@@ -891,7 +898,42 @@ document.addEventListener('keydown', e => {
 
 /* Begin & replay */
 document.getElementById('begin-btn').addEventListener('click', () => goTo(1, 1));
-document.getElementById('replay-btn').addEventListener('click', () => goTo(0,-1));
+document.getElementById('replay-btn').addEventListener('click', () => {
+  // Reset one-time state flags so all animations/content rebuild on replay
+  Object.keys(entered).forEach(k => delete entered[k]);
+  celebDone = false;
+
+  const tl = document.getElementById('timeline');         if(tl) tl.innerHTML='';
+  const gal = document.getElementById('photo-grid');       if(gal) gal.innerHTML='';
+  const reasons = document.getElementById('reasons-grid');  if(reasons) reasons.innerHTML='';
+  const mem = document.getElementById('mem-slides');         if(mem) mem.innerHTML='';
+  const dotsEl = document.getElementById('sl-dots');          if(dotsEl) dotsEl.innerHTML='';
+  const balloons = document.getElementById('balloons');    if(balloons) balloons.innerHTML='';
+
+  const col = document.getElementById('final-collage');    if(col) col.innerHTML='';
+  const fh  = document.getElementById('final-hearts');     if(fh) fh.innerHTML='';
+  const nameEl = document.getElementById('final-name');    if(nameEl){ nameEl.textContent=''; nameEl._set=false; }
+  const petalsC = document.getElementById('petals-c');     if(petalsC) petalsC._init=false;
+
+  document.querySelectorAll('.prm-line').forEach(l=>l.classList.remove('vis'));
+
+  // Restart typing effect on page 1
+  const typedEl = document.getElementById('typed');
+  const cur = document.getElementById('cursor');
+  if(typedEl){
+    typedEl.textContent='';
+    if(cur) cur.style.display='';
+    const name = CONFIG.friendName || 'My Best Friend';
+    let i=0;
+    function t(){
+      if(i<=name.length){ typedEl.textContent=name.slice(0,i++); setTimeout(t,i===1?200:45+Math.random()*35); }
+      else{ setTimeout(()=>{ if(cur) cur.style.display='none'; },1800); }
+    }
+    setTimeout(t,250);
+  }
+
+  goTo(0,-1);
+});
 
 /* ————————————————————————————
    PAGE-ENTER HOOKS
@@ -951,10 +993,10 @@ function onPageEnter(i) {
   const name=CONFIG.friendName||'My Best Friend';
   let i=0;
   function t(){
-    if(i<=name.length){ el.textContent=name.slice(0,i++); setTimeout(t,i===1?900:75+Math.random()*55); }
-    else{ setTimeout(()=>{ if(cur) cur.style.display='none'; },2000); }
+    if(i<=name.length){ el.textContent=name.slice(0,i++); setTimeout(t,i===1?200:45+Math.random()*35); }
+    else{ setTimeout(()=>{ if(cur) cur.style.display='none'; },1800); }
   }
-  setTimeout(t,1100);
+  setTimeout(t,250);
 })();
 
 (function floatingHearts() {
