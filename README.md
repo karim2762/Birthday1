@@ -34,7 +34,7 @@ A beautifully crafted **single-file HTML tribute** designed to celebrate friends
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/friendship-page.git
+git clone https://github.com/karim2762/Birthday1.git
 ```
 
 ### 2. Open the project
